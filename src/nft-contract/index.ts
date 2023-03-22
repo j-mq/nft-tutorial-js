@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   NearContract,
   NearBindgen,
@@ -69,7 +68,7 @@ export class Contract extends NearContract {
     this.owner_id = owner_id;
     this.tokensPerOwner = new LookupMap("tokensPerOwner");
     this.tokensById = new LookupMap("tokensById");
-    this.tokensMetadataById = new UnorderedMap("tokenMetadataById");
+    this.tokenMetadataById = new UnorderedMap("tokenMetadataById");
     this.metadata = metadata;
   }
 
@@ -265,6 +264,6 @@ export class Contract extends NearContract {
   @view
   //Query for all the tokens for an owner
   nft_metadata() {
-    return internalNftMetadata(this);
+    return internalNftMetadata({ contract: this });
   }
 }

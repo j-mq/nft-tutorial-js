@@ -22,7 +22,7 @@ export function internalNftToken({
   contract: Contract;
   tokenId: string;
 }) {
-  let token = contract.tokensById(tokenId) as Token;
+  let token = contract.tokensById.get(tokenId) as Token;
   //if there wasn't a token ID in the tokens_by_id collection, we return None
   if (token == null) {
     return null;

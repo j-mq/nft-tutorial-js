@@ -23,7 +23,7 @@ export function internalMint({
   //specify the token struct that contains the owner ID
   let token = new Token({
     //set the owner ID equal to the receiver ID passed into the function
-    ownerId: reveiverId,
+    ownerId: receiverId,
   });
 
   //insert the token ID and token struct and make sure that the token doesn't exist
