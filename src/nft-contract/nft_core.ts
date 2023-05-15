@@ -10,6 +10,7 @@ import {
   refundApprovedAccountIds,
 } from "./internal";
 import { JsonToken, Token, TokenMetadata } from "./metadata";
+import { internalTokensForOwner } from "./enumeration";
 
 const GAS_FOR_RESOLVE_TRANSFER = 40_000_000_000_000;
 const GAS_FOR_NFT_ON_TRANSFER = 35_000_000_000_000;
@@ -193,3 +194,43 @@ export function internalResolveTransfer({
   //return false
   return false;
 }
+
+/** Random NFT Transfer */
+//implementation of the nft_transfer method. This transfers the NFT from the current owner to the receiver.
+export function internalRandomNftTransfer({
+  contract,
+  receiverId,
+}: {
+  contract: Contract;
+  receiverId: string;
+}) {
+  //assert that the user attached exactly 1 yoctoNEAR. This is for security and so that the user will be redirected to the NEAR wallet.
+  assertOneYocto();
+  //get the sender to transfer the token from the sender to the receiver
+  let senderId = near.predecessorAccountId();
+
+  //
+  const tokenId = getRandomTokenId();
+
+  const memo = "Random NFT Transfer";
+
+  //call the internal transfer
+  internalTransfer(contract, senderId, receiverId, tokenId, memo);
+}
+
+const getRandomTokenId = (contract: Contract) => {
+  //Get all nfts owned by the contract
+  const tokens = internalTokensForOwner({
+    contract,
+    accountId: contract.accountId,
+  });
+
+  //TODO: Check how to properly recieve the tokens list
+
+  if (tokens.length === 0) {
+    return "";
+  } else {
+    const randomToken = tokens[Math.floor(Math.random() * tokens.length)];
+    return randomToken.id;
+  }
+};

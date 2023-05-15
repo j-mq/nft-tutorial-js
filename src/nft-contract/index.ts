@@ -27,6 +27,8 @@ import {
   internalNftTransfer,
   internalNftTransferCall,
   internalResolveTransfer,
+  //Random NFT Transfer
+  internalRandomNftTransfer,
 } from "./nft_core";
 import {
   internalNftApprove,
@@ -265,5 +267,15 @@ export class Contract extends NearContract {
   //Query for all the tokens for an owner
   nft_metadata() {
     return internalNftMetadata({ contract: this });
+  }
+
+  /** Transfer random NFT to account */
+  @call
+  //implementation of the nft_transfer method. This transfers the NFT from the current owner to the receiver.
+  nft_get_random_nft({ receiver_id }) {
+    return internalRandomNftTransfer({
+      contract: this,
+      receiverId: receiver_id,
+    });
   }
 }
