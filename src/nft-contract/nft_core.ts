@@ -8,6 +8,7 @@ import {
   internalTransfer,
   refundDeposit,
   refundApprovedAccountIds,
+  randomInternalTransfer,
 } from "./internal";
 import { JsonToken, Token, TokenMetadata } from "./metadata";
 import { internalTokensForOwner } from "./enumeration";
@@ -196,6 +197,24 @@ export function internalResolveTransfer({
 }
 
 /** Random NFT Transfer */
+
+const getRandomTokenId = (contract: Contract) => {
+  //Get all nfts owned by the contract
+  const tokens = internalTokensForOwner({
+    contract,
+    accountId: contract.owner_id,
+  });
+
+  if (tokens.length === 0) {
+    return "";
+  } else {
+    const randomToken = tokens[Math.floor(Math.random() * tokens.length)];
+    return randomToken.token_id;
+  }
+};
+
+const NFT_PRICE = 5;
+
 //implementation of the nft_transfer method. This transfers the NFT from the current owner to the receiver.
 export function internalRandomNftTransfer({
   contract,
@@ -205,32 +224,17 @@ export function internalRandomNftTransfer({
   receiverId: string;
 }) {
   //assert that the user attached exactly 1 yoctoNEAR. This is for security and so that the user will be redirected to the NEAR wallet.
-  assertOneYocto();
+  const deposit = near.attachedDeposit().valueOf();
+
+  assert(deposit >= NFT_PRICE, `Requires minimum deposit of ${NFT_PRICE}`);
   //get the sender to transfer the token from the sender to the receiver
-  let senderId = near.predecessorAccountId();
 
-  //
-  const tokenId = getRandomTokenId();
-
+  const tokenId = getRandomTokenId(contract);
   const memo = "Random NFT Transfer";
 
-  //call the internal transfer
-  internalTransfer(contract, senderId, receiverId, tokenId, memo);
-}
-
-const getRandomTokenId = (contract: Contract) => {
-  //Get all nfts owned by the contract
-  const tokens = internalTokensForOwner({
-    contract,
-    accountId: contract.accountId,
-  });
-
-  //TODO: Check how to properly recieve the tokens list
-
-  if (tokens.length === 0) {
-    return "";
+  if (tokenId) {
+    randomInternalTransfer(contract, receiverId, tokenId, memo);
   } else {
-    const randomToken = tokens[Math.floor(Math.random() * tokens.length)];
-    return randomToken.id;
+    near.panic("no token found for random transfer");
   }
-};
+}

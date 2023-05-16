@@ -2,3 +2,9 @@ near dev-deploy build/contract.wasm -f && source ./neardev/dev-account.env && ne
 
 
 near call $CONTRACT_NAME nft_transfer '{"receiver_id": "benji.fayyr.testnet", "token_id": "token-1"}' --accountId $CONTRACT_NAME --depositYocto 1
+
+
+near call cottonbottom.testnet nft_get_random_nft '{"receiver_id": "kumanosuke.testnet"}' --accountId kumanosuke.testnet --depositYocto 5
+
+
+yarn build && near deploy --wasmFile build/nft.wasm --accountId cottonbottom.testnet
