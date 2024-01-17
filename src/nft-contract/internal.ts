@@ -119,7 +119,7 @@ export function internalTransfer(
 
   //we create a new token struct
   let newToken = new Token({
-    ownerId: receiverId,
+    ownerId: receiverId
   });
 
   //insert that new token into the tokens_by_id, replacing the old entry
@@ -133,6 +133,13 @@ export function internalTransfer(
   //return the previous token object that was transferred.
   return token;
 }
+
+//TODO: Three random transfers, depending on how much is paid 0, 10, 20
+//TODO: If wallet already has a token of certain type, it cannot be transferred
+//TODO: Rarity inside the id:
+// perro-gato-mapache
+// gato-mapache-toro
+// mapache-toro-dragon
 
 //internal transfer for random token
 export function randomInternalTransfer(
@@ -160,7 +167,7 @@ export function randomInternalTransfer(
 
   //we create a new token struct
   let newToken = new Token({
-    ownerId: receiverId,
+    ownerId: receiverId
   });
 
   //insert that new token into the tokens_by_id, replacing the old entry
